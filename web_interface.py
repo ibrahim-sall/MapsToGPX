@@ -1,10 +1,10 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template, send_file, url_for
 import requests
 import os
 import xml.etree.ElementTree as ET
 import polyline
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 @app.route('/')
 def index():
@@ -56,6 +56,10 @@ def generate_gpx():
             return "No routes found in the response.", 400
     else:
         return f"Error fetching data: {response.status_code}", 500
+
+@app.route('/static/<filename>')
+def serve_static_file(filename):
+    return send_file(os.path.join(app.static_folder, filename))
 
 if __name__ == '__main__':
     app.run(debug=True)

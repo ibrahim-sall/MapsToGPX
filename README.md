@@ -16,6 +16,8 @@ This is a simple pages so you can export and download gpx files from a google ma
 ### Improves
 Still not sure about colors...
 
+### Usage
+If you don't want to use this page, you will found [Maps.py](https://github.com/ibrahim-sall/MapsToGPX/blob/main/maps.py) so you can make your own requests. 
 <h1 align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:12D559,100:5776FF&height=115&reversal=true&section=footer"/>
 </h1>

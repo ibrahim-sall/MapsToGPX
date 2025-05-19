@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map to GPX</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Map to GPX Converter</h1>
+        <form action="/generate_gpx" method="post" target="download_frame">
+            <label for="origin">Origin:</label>
+            <input type="text" id="origin" name="origin" required>
+
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" required>
+
+            <label for="waypoints">Waypoints (optional):</label>
+            <input type="text" id="waypoints" name="waypoints">
+
+            <label for="route_index">Route Index (1 for first route, etc.):</label>
+            <input type="number" id="route_index" name="route_index" required>
+
+            <button type="submit">Generate GPX</button>
+        </form>
+    </div>
+
+    <div id="map" style="height: 500px; margin-top: 20px;"></div>
+    <iframe id="download_frame" style="display: none;"></iframe>
+
+    <script>
+        const map = L.map('map').setView([48.8566, 2.3522], 6); // Default view (Paris)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Function to load and display GPX
+        function loadGPX(gpxUrl) {
+            fetch(gpxUrl)
+                .then(response => response.text())
+                .then(gpxData => {
+                    const parser = new DOMParser();
+                    const gpx = parser.parseFromString(gpxData, "application/xml");
+                    const trackPoints = gpx.querySelectorAll("trkpt");
+                    const latlngs = Array.from(trackPoints).map(pt => [
+                        parseFloat(pt.getAttribute("lat")),
+                        parseFloat(pt.getAttribute("lon"))
+                    ]);
+
+                    const polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+                    map.fitBounds(polyline.getBounds());
+                })
+                .catch(error => console.error("Error loading GPX:", error));
+        }
+
+        // Example: Uncomment and replace 'output.gpx' with the actual GPX file URL
+        // loadGPX('/static/output.gpx');
+    </script>
+</body>
+</html>

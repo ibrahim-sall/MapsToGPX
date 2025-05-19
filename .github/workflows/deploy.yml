@@ -49,6 +49,11 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: Run web_interface.py
+        run: |
+          python web_interface.py &
+          sleep 10
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

@@ -11,7 +11,7 @@
 <body>
     <div class="form-container">
         <h1>Map to GPX Converter</h1>
-        <form action="/generate_gpx" method="post" target="download_frame">
+        <form id="gpxForm" action="/generate_gpx" method="post">
             <label for="origin">Origin:</label>
             <input type="text" id="origin" name="origin" required>
 
@@ -22,14 +22,14 @@
             <input type="text" id="waypoints" name="waypoints">
 
             <label for="route_index">Route Index (1 for first route, etc.):</label>
-            <input type="number" id="route_index" name="route_index" required>
+            <input type="number" id="route_index" name="route_index" value="1" min="1">
 
             <button type="submit">Generate GPX</button>
         </form>
+        <button id="downloadBtn" style="margin-top:10px; display:none;">Download GPX</button>
     </div>
 
     <div id="map" style="height: 500px; margin-top: 20px;"></div>
-    <iframe id="download_frame" style="display: none;"></iframe>
 
     <script>
         const map = L.map('map').setView([48.8566, 2.3522], 6);
@@ -37,27 +37,55 @@
             maxZoom: 19,
         }).addTo(map);
 
-        // Function to load and display GPX
-        function loadGPX(gpxUrl) {
-            fetch(gpxUrl)
-                .then(response => response.text())
-                .then(gpxData => {
-                    const parser = new DOMParser();
-                    const gpx = parser.parseFromString(gpxData, "application/xml");
-                    const trackPoints = gpx.querySelectorAll("trkpt");
-                    const latlngs = Array.from(trackPoints).map(pt => [
-                        parseFloat(pt.getAttribute("lat")),
-                        parseFloat(pt.getAttribute("lon"))
-                    ]);
+        let currentPolyline = null;
+        let currentGPXData = null;
 
-                    const polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
-                    map.fitBounds(polyline.getBounds());
-                })
-                .catch(error => console.error("Error loading GPX:", error));
+        // Function to load and display GPX from string
+        function loadGPXFromString(gpxData) {
+            const parser = new DOMParser();
+            const gpx = parser.parseFromString(gpxData, "application/xml");
+            const trackPoints = gpx.querySelectorAll("trkpt");
+            const latlngs = Array.from(trackPoints).map(pt => [
+                parseFloat(pt.getAttribute("lat")),
+                parseFloat(pt.getAttribute("lon"))
+            ]);
+            if (currentPolyline) {
+                map.removeLayer(currentPolyline);
+            }
+            if (latlngs.length > 0 && document.getElementById('displayMapCheckbox').checked) {
+                currentPolyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+                map.fitBounds(currentPolyline.getBounds());
+            } else {
+                currentPolyline = null;
+            }
         }
 
-        // Example: Uncomment and replace 'output.gpx' with the actual GPX file URL
-        // loadGPX('/static/output.gpx');
+        // Handle form submission via AJAX
+            })
+            .then(response => response.text())
+            .then(gpxData => {
+                currentGPXData = gpxData;
+                loadGPXFromString(gpxData);
+                document.getElementById('downloadBtn').style.display = 'inline-block';
+            })
+            .catch(error => {
+                alert("Error generating GPX: " + error);
+            });
+        });
+
+        // Download GPX button handler
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            if (!currentGPXData) return;
+            const blob = new Blob([currentGPXData], { type: 'application/gpx+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'route.gpx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
     </script>
 </body>
 </html>

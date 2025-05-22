@@ -3,10 +3,18 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    width: 100%;
+    padding-top: 40px;
+    box-sizing: border-box;
 }
 
 header {
@@ -27,12 +35,35 @@ h1 {
 }
 
 .form-container {
+    flex: 1 1 350px;
+    max-width: 400px;
+    min-width: 280px;
     background-color: white;
-    padding: 2rem;
+    padding: 3rem;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-right: 16px;
+}
+
+.title-box {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 120, 215, 0.10);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
     max-width: 400px;
     width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.title-box h1 {
+    margin: 0;
+    color: #0078d7;
+    font-size: 2rem;
+    font-weight: bold;
 }
 
 label {
@@ -78,21 +109,65 @@ footer {
 @media (max-width: 600px) {
     .form-container {
         padding: 1.5rem;
+        margin: 1rem 0;
     }
 
     input,
     button {
         font-size: 0.9rem;
+        margin-bottom: 1.2rem;
     }
 }
 
-#map {
+.main-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 24px;
     width: 100%;
-    height: 400px;
-    margin: 2rem 0;
+    max-width: 1400px;
+    margin: 24px auto 32px auto;
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+}
+
+#map {
+    flex: 2 1 0;
+    width: 100%;
+    min-width: 350px;
+    height: 600px;
+    margin: 0;
+    padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     background: #e6eaf0;
+    box-sizing: border-box;
+    margin-left: 16px;
+}
+
+@media (max-width: 1100px) {
+    .main-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .form-container {
+        max-width: 100%;
+        width: 100%;
+        margin-right: 0;
+    }
+
+    #map {
+        width: 100%;
+        max-width: 600px;
+        height: 350px;
+        margin-left: 0;
+    }
 }
 
 @media (max-width: 600px) {

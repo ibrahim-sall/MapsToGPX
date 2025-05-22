@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Map to GPX</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
 </head>
 <body>
     <div class="form-container">
@@ -28,9 +32,7 @@
         </form>
         <button id="downloadBtn" style="margin-top:10px; display:none;">Download GPX</button>
     </div>
-
     <div id="map" style="height: 500px; margin-top: 20px;"></div>
-
     <script>
         const map = L.map('map').setView([48.8566, 2.3522], 6);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -40,7 +42,6 @@
         let currentPolyline = null;
         let currentGPXData = null;
 
-        // Function to load and display GPX from string
         function loadGPXFromString(gpxData) {
             const parser = new DOMParser();
             const gpx = parser.parseFromString(gpxData, "application/xml");
@@ -52,15 +53,19 @@
             if (currentPolyline) {
                 map.removeLayer(currentPolyline);
             }
-            if (latlngs.length > 0 && document.getElementById('displayMapCheckbox').checked) {
+            if (latlngs.length > 0) {
                 currentPolyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
                 map.fitBounds(currentPolyline.getBounds());
             } else {
                 currentPolyline = null;
             }
         }
-
-        // Handle form submission via AJAX
+        document.getElementById('gpxForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/generate_gpx', {
+                method: 'POST',
+                body: formData
             })
             .then(response => response.text())
             .then(gpxData => {

@@ -11,7 +11,7 @@
 ![GitHub Pages](https://img.shields.io/github/deployments/ibrahim-sall/MapsToGPX/github-pages?label=GitHub%20Pages&logo=github)
 
 ## Purpose
-This is a simple pages so you can export and download gpx files from a google maps search. The output format will be compatible with your favorite route planning application like *Strava, Garmin, Komoot...*
+This is a simple project so you can export and download gpx files from a google maps search. The output format will be compatible with your favorite route planning application like *Strava, Garmin, Komoot...* It is composed of a web page based on a flask server. 
 
 ## Set up
 - API key
@@ -42,6 +42,7 @@ Alternatively, you can select the preferred plan, since Google can propose multi
 ## Perspectives
 - Enable multiple waypoints
 - Return elevation and distance informations
+- Deployment
 <h1 align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:12D559,100:5776FF&height=115&reversal=true&section=footer"/>
 </h1>

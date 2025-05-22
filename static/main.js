@@ -3,6 +3,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
 }).addTo(map);
 
+L.control.scale().addTo(map);
+
 let currentPolyline = null;
 let currentGPXData = null;
 
@@ -58,7 +60,7 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
     URL.revokeObjectURL(url);
 });
 
-// Custom autocomplete using backend proxy
+// Custom autocomplete
 function setupAutocomplete(inputId) {
     const input = document.getElementById(inputId);
     if (!input) return;

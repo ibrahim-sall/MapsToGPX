@@ -57,3 +57,66 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 });
+
+// Custom autocomplete using backend proxy
+function setupAutocomplete(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    let dropdown = null;
+
+    input.addEventListener('input', function () {
+        const value = input.value;
+        if (value.length < 2) {
+            if (dropdown) dropdown.remove();
+            return;
+        }
+        fetch(`/autocomplete?input=${encodeURIComponent(value)}`)
+            .then(res => res.json())
+            .then(suggestions => {
+                if (dropdown) dropdown.remove();
+                dropdown = document.createElement('div');
+                dropdown.className = 'autocomplete-dropdown';
+                dropdown.style.position = 'absolute';
+                dropdown.style.background = '#fff';
+                dropdown.style.border = '1px solid #ccc';
+                dropdown.style.zIndex = 1000;
+                dropdown.style.width = input.offsetWidth + 'px';
+                dropdown.style.maxHeight = '200px';
+                dropdown.style.overflowY = 'auto';
+
+                suggestions.forEach(s => {
+                    const item = document.createElement('div');
+                    item.textContent = s;
+                    item.style.padding = '4px';
+                    item.style.cursor = 'pointer';
+                    item.addEventListener('mousedown', function (e) {
+                        e.preventDefault();
+                        input.value = s;
+                        dropdown.remove();
+                        dropdown = null;
+                    });
+                    dropdown.appendChild(item);
+                });
+
+                const rect = input.getBoundingClientRect();
+                dropdown.style.left = rect.left + window.scrollX + 'px';
+                dropdown.style.top = rect.bottom + window.scrollY + 'px';
+
+                document.body.appendChild(dropdown);
+            });
+    });
+
+    input.addEventListener('blur', function () {
+        setTimeout(() => {
+            if (dropdown) {
+                dropdown.remove();
+                dropdown = null;
+            }
+        }, 100);
+    });
+}
+
+setupAutocomplete('origin');
+setupAutocomplete('destination');
+setupAutocomplete('waypoints');

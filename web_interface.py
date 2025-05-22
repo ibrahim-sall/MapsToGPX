@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file, url_for
+from flask import Flask, request, render_template, send_file, url_for, jsonify
 import requests
 import os
 import xml.etree.ElementTree as ET
@@ -56,6 +56,25 @@ def generate_gpx():
             return "No routes found in the response.", 400
     else:
         return f"Error fetching data: {response.status_code}", 500
+
+@app.route('/autocomplete')
+def autocomplete():
+    api_key = os.getenv('API_KEY')
+    if not api_key:
+        return jsonify([]), 500
+    input_text = request.args.get('input', '')
+    if not input_text:
+        return jsonify([]), 400
+    url = (
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json'
+        f'?input={input_text}&types=geocode&key={api_key}'
+    )
+    resp = requests.get(url)
+    if resp.status_code == 200:
+        predictions = resp.json().get('predictions', [])
+        suggestions = [p['description'] for p in predictions]
+        return jsonify(suggestions)
+    return jsonify([]), 500
 
 @app.route('/static/<filename>')
 def serve_static_file(filename):

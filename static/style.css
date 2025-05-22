@@ -99,5 +99,7 @@ footer {
     #map {
         height: 250px;
         margin: 1rem 0;
+        padding: 1rem;
+        border: 2px solid #b0b8c1;
     }
 }

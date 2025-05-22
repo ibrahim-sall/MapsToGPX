@@ -38,6 +38,10 @@ You can then access the web page and make your first route planning. And thus, b
 If you want to pass through a particular place or city, you can set waypoints along the route. You can also simply use it to create a route that goes there and back.
 - Preferred route:
 Alternatively, you can select the preferred plan, since Google can propose multiple ones. Just by using the integer between one & three (it is rare than more are proposed).
+
+## Perspectives
+- Enable multiple waypoints
+- Return elevation and distance informations
 <h1 align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:12D559,100:5776FF&height=115&reversal=true&section=footer"/>
 </h1>
